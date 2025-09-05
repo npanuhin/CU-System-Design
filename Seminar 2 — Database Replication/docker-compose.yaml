@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres-primary:
+    image: bitnami/postgresql:15
+    container_name: postgres-primary
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=postgres
+      - POSTGRESQL_DATABASE=lena_db
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_pass
+    ports:
+      - "5432:5432"
+
+  postgres-replica1:
+    image: bitnami/postgresql:15
+    container_name: postgres-replica1
+    depends_on:
+      - postgres-primary
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_MASTER_HOST=postgres-primary
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_pass
+      - POSTGRESQL_PASSWORD=postgres
+    ports:
+      - "5433:5432"
+
+  postgres-replica2:
+    image: bitnami/postgresql:15
+    container_name: postgres-replica2
+    depends_on:
+      - postgres-primary
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_MASTER_HOST=postgres-primary
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_pass
+      - POSTGRESQL_PASSWORD=postgres
+    ports:
+      - "5434:5432"
+
+  adminer:
+    image: adminer:4
+    container_name: adminer
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres-primary
+    depends_on:
+      - postgres-primary
+      - postgres-replica1
+      - postgres-replica2
