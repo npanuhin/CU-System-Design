@@ -1,8 +1,7 @@
 0. Start 3 instances of postgres in docker
-
-```sh
-docker compose up -d
-```
+	```sh
+	docker compose up -d
+	```
 
 1. Enter `postgres2`:
 	```sh
@@ -22,7 +21,7 @@ docker compose up -d
 
 2. Enter `postgres3`:
 	```sh
-	docker exec -it postgres3 psql -U user -d shard2
+	docker exec -it postgres3 psql -U user -d shard3
 	```
 
 	Create a table:
@@ -106,9 +105,14 @@ docker compose up -d
 	INSERT INTO users_all (name, age) VALUES ('Alice', 25);
 	INSERT INTO users_all (name, age) VALUES ('Bob', 45);
 	INSERT INTO users_all (name, age) VALUES ('Charlie', 70);
+	\q
 	```
 
-4. Read data from `postgres1`:
+4. Read data:
+	```sh
+	docker exec -it postgres1 psql -U user -d shard1 -c "SELECT * FROM users_all;"
+	```
+
 	```sh
 	docker exec -it postgres2 psql -U user -d shard2 -c "SELECT * FROM users;"
 	```
