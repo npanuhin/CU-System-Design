@@ -1,0 +1,5 @@
+db.books.insertMany([
+  { title: "Война и мир", author: "Лев Толстой", year: 1869, genre: "Роман" },
+  { title: "1984", author: "Джордж Оруэлл", year: 1949, genre: "Антиутопия" },
+  { title: "Дюна", author: "Фрэнк Герберт", year: 1965, genre: "Научная фантастика" }
+])
